@@ -130,6 +130,8 @@ function buildLayout(t) {
   return { ...t, slots, capacity: slots.length, coinD: toPath(coinPolygon(64, t.coinW)) };
 }
 
+export const COIN_ASPECT = (RAW_Y1 - RAW_Y0) / (RAW_X1 - RAW_X0);
+
 export const LAYOUTS = TIERS.map(buildLayout);
 
 // 메시지 수에 맞는 배치. 첫 단계에 다 들어가면 큰 코인, 넘치면 작은 코인.

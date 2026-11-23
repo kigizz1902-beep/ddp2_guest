@@ -98,13 +98,7 @@ export default function App() {
       )}
 
       {screen === 'zoom' && (
-        <ZoomView
-          messages={messages}
-          page={basketPage}
-          onPageChange={setBasketPage}
-          lastAdded={lastAdded}
-          onClose={handleBack}
-        />
+        <ZoomView messages={messages} onClose={handleBack} />
       )}
 
       {showCeleb && (
