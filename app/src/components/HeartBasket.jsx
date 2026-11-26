@@ -1,12 +1,18 @@
 import { useRef, useState } from 'react';
 import {
-  BASKET_D, COIN_COLORS, layoutFor,
-  VIEW_W, VIEW_H, SLOT_X, SLOT_Y, BASKET_BOTTOM, BASKET_MID_Y,
+  COIN_COLORS, layoutFor,
+  VIEW_W, VIEW_H, SLOT_X, SLOT_Y, BASKET_MID_Y,
 } from '../lib/heartGeometry';
 import { coinLabel } from '../lib/coinLabel';
 import MessageDialog from './MessageDialog';
 
-export default function HeartBasket({ messages, status = 'ok', page, onPageChange, lastAdded, size = 'main' }) {
+const HINT_TOP = '。　♡ 。　　♡。　　♡\n♡。　＼　　｜　　／。　♡';
+const HINT_BOTTOM = '♡。　／　　｜　　＼。　♡\n。　♡。 　　。　　♡。';
+
+// 분홍 화살표는 두 하트 사이 V자 틈 안, 투입구 바로 위에 둔다.
+const ARROW_Y = 36;
+
+export default function HeartBasket({ messages, status = 'ok', page, onPageChange, lastAdded, size = 'main', actions = null }) {
   const [selected, setSelected] = useState(null);
   const triggerRef = useRef(null);
 
@@ -44,13 +50,21 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
 
   return (
     <div className={`basket basket--${size}`}>
+      <div className="basket-stage">
+      <div className="basket-hint" role="note" aria-label="메세지를 남겨 하트를 채워주세요">
+        <pre className="hint-art" aria-hidden="true">{HINT_TOP}</pre>
+        <p className="hint-text" aria-hidden="true">메세지를 남겨 하트를 채워주세요</p>
+        <pre className="hint-art" aria-hidden="true">{HINT_BOTTOM}</pre>
+      </div>
+      {actions}
       <svg
         className="basket-svg"
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+        style={{ aspectRatio: `${VIEW_W} / ${VIEW_H}` }}
         role="group"
         aria-label={`하트 방명록 바구니, 메시지 ${messages.length}개`}
       >
-        <path d={BASKET_D} fill="#ffffff" />
+        <image href="/images/heartbox.webp" x="0" y="0" width={VIEW_W} height={VIEW_H} preserveAspectRatio="none" />
 
         <g className="basket-coins">
           {pageMessages.map((msg, i) => {
@@ -88,7 +102,6 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
                     textAnchor="middle"
                     dominantBaseline="central"
                     fontSize={layout.font}
-                    fontWeight="700"
                     fill="#0b2326"
                     pointerEvents="none"
                     aria-hidden="true"
@@ -103,27 +116,8 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
           })}
         </g>
 
-        <path
-          className="basket-outline"
-          d={BASKET_D}
-          fill="none"
-          stroke="#2a777e"
-          strokeWidth="2.5"
-          strokeLinejoin="round"
-          pointerEvents="none"
-        />
-
         <g aria-hidden="true" pointerEvents="none">
-          <rect x={SLOT_X - 22} y={SLOT_Y - 6} width="44" height="8" rx="4" fill="#2a777e" />
-          <path className="basket-arrow" d={`M${SLOT_X - 7} ${SLOT_Y + 10}h14l-7 9z`} fill="#f277ad" />
-          <path
-            className="basket-pedestal"
-            d={`M${SLOT_X - 22} ${BASKET_BOTTOM + 3} L${SLOT_X + 22} ${BASKET_BOTTOM + 3} L${SLOT_X + 38} ${BASKET_BOTTOM + 26} L${SLOT_X - 38} ${BASKET_BOTTOM + 26} Z`}
-            fill="#ffffff"
-            stroke="#2a777e"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
+          <path className="basket-arrow" d={`M${SLOT_X - 7} ${ARROW_Y}h14l-7 9z`} fill="#f277ad" />
         </g>
 
         {messages.length === 0 && (
@@ -132,7 +126,6 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
             y={BASKET_MID_Y}
             textAnchor="middle"
             fontSize="26"
-            fontWeight="600"
             fill="#2a777e"
             pointerEvents="none"
           >
@@ -152,6 +145,8 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
           </text>
         )}
       </svg>
+      </div>
+      <p className="basket-note">하트를 누르면 메세지를 읽을 수 있어요.</p>
 
       {pageCount > 1 && (
         <nav className="basket-pager" aria-label="바구니 페이지">

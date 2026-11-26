@@ -4,29 +4,16 @@ import MainScreen from './components/MainScreen';
 import GuestbookScreen from './components/GuestbookScreen';
 import ZoomView from './components/ZoomView';
 import CelebrationEffect from './components/CelebrationEffect';
-import DevControls from './components/DevControls';
 import { usePartyState } from './hooks/usePartyState';
-import { usePartyTest } from './hooks/usePartyTest';
 import { useGuestbook } from './hooks/useGuestbook';
 
 export default function App() {
   const [screen, setScreen] = useState('entrance');
-  const [overrideTime, setOverrideTime] = useState(null);
   const [showCeleb, setShowCeleb] = useState(false);
   const [basketPage, setBasketPage] = useState(null);
 
-  const partyTest = usePartyTest(screen !== 'main');
-  const partyState = usePartyState(partyTest.testNow ?? overrideTime);
-  const exitTest = partyTest.exit;
+  const partyState = usePartyState();
 
-  useEffect(() => {
-    if (screen === 'entrance') exitTest();
-  }, [screen, exitTest]);
-
-  const handlePreset = useCallback((time) => {
-    exitTest();
-    setOverrideTime(time);
-  }, [exitTest]);
   const { messages, status, addMessage, submitting, lastAdded, clearLastAdded } = useGuestbook();
 
   useEffect(() => {
@@ -78,7 +65,6 @@ export default function App() {
       {screen === 'main' && (
         <MainScreen
           partyState={partyState}
-          partyTest={partyTest}
           messages={messages}
           status={status}
           page={basketPage}
@@ -111,10 +97,6 @@ export default function App() {
           active={showCeleb}
           onDone={handleCelebDone}
         />
-      )}
-
-      {screen !== 'entrance' && (
-        <DevControls onTimeChange={handlePreset} />
       )}
     </div>
   );

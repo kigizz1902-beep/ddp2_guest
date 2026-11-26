@@ -1,13 +1,14 @@
-import { DJ_SCHEDULE, PARTY_DATE, IS_SAMPLE_SCHEDULE } from '../data/schedule';
+import { DJ_SCHEDULE, PARTY_DATE } from '../data/schedule';
 
 const SIZES = {
-  large: { cover: 100, lp: 90, font: 14 },
-  normal: { cover: 70, lp: 60, font: 11 },
-  small: { cover: 52, lp: 44, font: 10 },
+  large: { cover: 100, lp: 110, ig: 20 },
+  normal: { cover: 70, lp: 77, ig: 15 },
+  small: { cover: 52, lp: 57, ig: 12 },
 };
 
 const px = n => `calc(${n}px * var(--rec-scale, 1))`;
 const LP_SHOW = 0.35;
+const COVER_RATIO = 4 / 3; // 커버 이미지는 3:4 세로
 
 const hm = iso =>
   new Date(iso).toLocaleTimeString('ko-KR', {
@@ -21,6 +22,10 @@ const range = dj => `${hm(dj.startTime)}~${hm(dj.endTime)}`;
 
 const chunk = (list, n) =>
   Array.from({ length: Math.ceil(list.length / n) }, (_, i) => list.slice(i * n, i * n + n));
+
+const IG_PATH =
+  'M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zM7 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7z' +
+  'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM17.5 5.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6z';
 
 function Candle() {
   return (
@@ -38,33 +43,57 @@ function Candles({ count = 5 }) {
   );
 }
 
-function RecordSet({ dj, size = 'normal', label, isNow = false, timeText, width }) {
+function RecordSet({ dj, size = 'normal', tag, label, isNow = false, timeText, width }) {
   const s = SIZES[size];
   const setWidth = width ?? px(s.cover + s.lp * LP_SHOW + 16);
 
-  return (
-    <div className="record-set" style={{ width: setWidth }}>
-      {label && <span className={`record-label${isNow ? ' is-now' : ''}`}>{label}</span>}
-      <div className="record-art" aria-hidden="true">
-        <div className="record-cover" style={{ width: px(s.cover), height: px(s.cover) }}>
-          <span className="cover-name" style={{ fontSize: px(s.font) }}>{dj.name}</span>
-          {size === 'large' && <span className="cover-time">{range(dj)}</span>}
-        </div>
-        <div
-          className="record-lp"
-          style={{ width: px(s.lp), height: px(s.lp), marginLeft: px(-s.lp * (1 - LP_SHOW)) }}
-        >
-          <span className="lp-ring" />
-          <span className="lp-hole" />
-        </div>
+  const art = (
+    <>
+      <div className="record-cover" style={{ width: px(s.cover), height: px(s.cover * COVER_RATIO) }}>
+        <img className="cover-img" src={dj.cover} width="360" height="480" alt="" draggable="false" />
       </div>
-      <span className="visually-hidden">{dj.name}</span>
-      {timeText && <span className="record-time">{timeText}</span>}
-      {dj.instaHandle && (
-        dj.instaUrl
-          ? <a className="record-insta" href={dj.instaUrl} target="_blank" rel="noopener noreferrer">{dj.instaHandle}</a>
-          : <span className="record-insta">{dj.instaHandle}</span>
+      <div
+        className="record-lp"
+        style={{ width: px(s.lp), height: px(s.lp), marginLeft: px(-s.lp * (1 - LP_SHOW)) }}
+      >
+        <span className="lp-ring" />
+        <span className="lp-hole" />
+        {dj.instaUrl && (
+          <svg
+            className="record-ig"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            style={{ width: px(s.ig), height: px(s.ig), right: px(s.lp * ((1 - (1 - LP_SHOW)) / 2) - s.ig / 2) }}
+          >
+            <path fillRule="evenodd" d={IG_PATH} />
+          </svg>
+        )}
+      </div>
+    </>
+  );
+
+  return (
+    <div className="record-set" style={{ width: setWidth, '--art-w': px(s.cover + s.lp * LP_SHOW) }}>
+      {(tag || label) && (
+        <div className="record-labels">
+          {tag && <span className={`record-label record-tag${isNow ? ' is-now' : ''}`}>{tag}</span>}
+          {label && <span className="record-label">{label}</span>}
+        </div>
       )}
+      {dj.instaUrl ? (
+        <a
+          className="record-art record-link"
+          href={dj.instaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${dj.djNo} ${dj.name} 인스타그램 열기 (새 탭)`}
+        >
+          {art}
+        </a>
+      ) : (
+        <div className="record-art" role="img" aria-label={`${dj.djNo} ${dj.name}`}>{art}</div>
+      )}
+      {timeText && <span className="record-time">{timeText}</span>}
     </div>
   );
 }
@@ -98,26 +127,9 @@ function DateStrip({ dDay }) {
   );
 }
 
-function TestBanner({ test }) {
-  if (!test) return null;
-  const when = test.now.toLocaleString('ko-KR', {
-    timeZone: 'Asia/Seoul',
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  });
-  return (
-    <p className="test-banner" role="status">
-      테스트 중 · 가상 시각 {when}{IS_SAMPLE_SCHEDULE ? ' · 샘플 시간표' : ''}
-    </p>
-  );
-}
+const orderLabel = dj => `#${dj.order} ${dj.name}`;
 
-const orderLabel = dj => `#${dj.order}`;
-
-export default function RecordCake({ partyState, test }) {
+export default function RecordCake({ partyState }) {
   const { phase } = partyState;
   const all = DJ_SCHEDULE;
   const dDay = partyState.dDay ?? 0;
@@ -127,11 +139,10 @@ export default function RecordCake({ partyState, test }) {
     const rest = all.filter(d => d.id !== currentDJ.id && d.id !== nextDJ?.id);
     return (
       <div className="record-cake">
-        <TestBanner test={test} />
         <Candles count={1} />
-        <RecordSet dj={currentDJ} size="large" label="♪ NOW" isNow />
+        <RecordSet dj={currentDJ} size="large" tag={<><span className="note-move" aria-hidden="true">♪</span> NOW</>} label={orderLabel(currentDJ)} isNow timeText={range(currentDJ)} />
         {nextDJ ? (
-          <RecordSet dj={nextDJ} size="normal" label="NEXT" timeText={range(nextDJ)} />
+          <RecordSet dj={nextDJ} size="normal" tag="NEXT" label={orderLabel(nextDJ)} timeText={range(nextDJ)} />
         ) : (
           <p className="pre-show-notice">마지막 공연 · 다음 공연 없음</p>
         )}
@@ -154,7 +165,6 @@ export default function RecordCake({ partyState, test }) {
     const rest = all.filter(d => d.id !== nextDJ.id);
     return (
       <div className="record-cake">
-        <TestBanner test={test} />
         <Candles count={1} />
         <p className="pre-show-notice">
           {phase === 'gap' ? '다음 공연 대기 중' : '곧 공연이 시작됩니다!'}
@@ -162,7 +172,9 @@ export default function RecordCake({ partyState, test }) {
         <RecordSet
           dj={nextDJ}
           size="large"
-          label={phase === 'gap' ? 'NEXT' : 'FIRST'}
+          tag={phase === 'gap' ? 'NEXT' : 'FIRST'}
+          label={orderLabel(nextDJ)}
+          timeText={range(nextDJ)}
         />
         {chunk(rest, 4).map((row, i) => (
           <CakeRow
@@ -182,9 +194,12 @@ export default function RecordCake({ partyState, test }) {
 
   return (
     <div className="record-cake">
-      <TestBanner test={test} />
       {phase === 'ended' ? (
-        <p className="pre-show-notice">모든 공연이 끝났습니다. 감사합니다!</p>
+        <p className="end-notice">
+          <span aria-hidden="true">🎉</span>
+          <span>모든 공연이 끝났습니다. 감사합니다!</span>
+          <span aria-hidden="true">🎉</span>
+        </p>
       ) : (
         <Candles count={1} />
       )}

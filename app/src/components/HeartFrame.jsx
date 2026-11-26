@@ -1,19 +1,18 @@
 import HeartBasket from './HeartBasket';
 
-function HeartButton({ label, filled, onClick }) {
-  const stroke = filled ? '#f277ad' : '#2a777e';
+function HeartOutlineIcon() {
   return (
-    <button type="button" className="heart-shape-btn" onClick={onClick}>
-      <svg width="140" height="60" viewBox="0 0 140 60" aria-hidden="true">
-        <path
-          d="M70 55 C40 40 5 30 5 18 5 8 18 2 30 2 42 2 55 8 70 20 85 8 98 2 110 2 122 2 135 8 135 18 135 30 100 40 70 55Z"
-          fill={filled ? '#f277ad' : '#ffffff'}
-          stroke={stroke}
-          strokeWidth="2"
-        />
-      </svg>
-      <span className={`heart-shape-btn-label${filled ? ' is-filled' : ''}`}>{label}</span>
-    </button>
+    <svg className="pill-btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 20.4S3.6 15.3 3.6 9.3a4.6 4.6 0 0 1 8.4-2.6 4.6 4.6 0 0 1 8.4 2.6c0 6-8.4 11.1-8.4 11.1z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ExpandIcon() {
+  return (
+    <svg className="pill-btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -26,11 +25,19 @@ export default function HeartFrame({ messages, status, page, onPageChange, lastA
         page={page}
         onPageChange={onPageChange}
         lastAdded={lastAdded}
+        actions={(
+          <div className="heart-frame-buttons">
+            <button type="button" className="pill-btn pill-btn--primary" onClick={onWriteClick}>
+              <HeartOutlineIcon />
+              메시지 남기기
+            </button>
+            <button type="button" className="pill-btn pill-btn--outline" onClick={onZoomClick}>
+              <ExpandIcon />
+              크게 보기
+            </button>
+          </div>
+        )}
       />
-      <div className="heart-frame-buttons">
-        <HeartButton label="메시지 남기기" filled onClick={onWriteClick} />
-        <HeartButton label="확대하기" filled={false} onClick={onZoomClick} />
-      </div>
     </div>
   );
 }

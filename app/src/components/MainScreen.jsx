@@ -1,9 +1,8 @@
 import RecordCake from './RecordCake';
-import PartyTestControls from './PartyTestControls';
 import HeartFrame from './HeartFrame';
 
 export default function MainScreen({
-  partyState, partyTest, messages, status, page, onPageChange, lastAdded,
+  partyState, messages, status, page, onPageChange, lastAdded,
   onWriteClick, onZoomClick, onTitleClick,
 }) {
   return (
@@ -18,14 +17,14 @@ export default function MainScreen({
         <img className="main-logo main-logo--side" src="/images/logo_year.png" width="529" height="155" alt="돌잔치" draggable="false" />
       </header>
 
+      <p className="main-invite">
+        <span aria-hidden="true">♪</span> <strong>D.D.P 돌잔치</strong>에 축하 메세지를 남겨주세요 <span aria-hidden="true">♪</span>
+      </p>
+
       <main className="main-content">
         <section className="main-left">
           <div className="cake-group">
-            <RecordCake
-              partyState={partyState}
-              test={partyTest.on ? { now: partyState.now } : null}
-            />
-            <PartyTestControls test={partyTest} />
+            <RecordCake partyState={partyState} />
           </div>
         </section>
 

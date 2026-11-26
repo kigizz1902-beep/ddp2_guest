@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { computePartyState } from '../lib/partyState';
 
-export function usePartyState(overrideTime) {
+export function usePartyState() {
   const [realNow, setRealNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -16,6 +16,5 @@ export function usePartyState(overrideTime) {
     };
   }, []);
 
-  const now = overrideTime ?? realNow;
-  return { ...computePartyState(now), now };
+  return { ...computePartyState(realNow), now: realNow };
 }

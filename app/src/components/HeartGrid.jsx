@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { COIN_COLORS, COIN_ASPECT, layoutFor } from '../lib/heartGeometry';
-import { coinLabel } from '../lib/coinLabel';
+import { COIN_COLORS, COIN_ASPECT, LAYOUTS } from '../lib/heartGeometry';
+import { fitMessage } from '../lib/coinLabel';
 import MessageDialog from './MessageDialog';
 
 const PAD = 2;
@@ -9,10 +9,12 @@ export default function HeartGrid({ messages, status = 'ok' }) {
   const [selected, setSelected] = useState(null);
   const triggerRef = useRef(null);
 
-  const layout = layoutFor(messages.length);
+  const layout = LAYOUTS[0];
   const w = layout.coinW;
   const h = w * COIN_ASPECT;
-  const lineGap = layout.font * 1.22;
+  const boxW = w * 0.7;
+  const boxH = h * 0.52;
+  const boxY = -h * 0.09;
 
   const close = () => {
     setSelected(null);
@@ -33,7 +35,7 @@ export default function HeartGrid({ messages, status = 'ok' }) {
     <div className="heart-grid-wrap">
       <div className="heart-grid">
         {messages.map((msg, i) => {
-          const lines = coinLabel(msg.message, layout.words, layout.maxUnits);
+          const { lines, size, gap } = fitMessage(msg.message, boxW, boxH);
           return (
             <button
               key={msg.id}
@@ -59,14 +61,14 @@ export default function HeartGrid({ messages, status = 'ok' }) {
                   strokeLinejoin="round"
                 />
                 <text
+                  className="grid-text"
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize={layout.font}
-                  fontWeight="700"
+                  fontSize={size}
                   fill="#0b2326"
                 >
                   {lines.map((line, j) => (
-                    <tspan key={j} x="0" y={-layout.font / 3 + (j - (lines.length - 1) / 2) * lineGap}>{line}</tspan>
+                    <tspan key={j} x="0" y={boxY + (j - (lines.length - 1) / 2) * gap}>{line}</tspan>
                   ))}
                 </text>
               </svg>
