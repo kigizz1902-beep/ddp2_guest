@@ -14,7 +14,7 @@ export default function HeartGrid({ messages, status = 'ok' }) {
   const h = w * COIN_ASPECT;
   const boxW = w * 0.7;
   const boxH = h * 0.52;
-  const boxY = -h * 0.09;
+  const boxY = 0;
 
   const close = () => {
     setSelected(null);

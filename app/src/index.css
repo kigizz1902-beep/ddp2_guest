@@ -745,8 +745,8 @@ input, textarea { font-weight: inherit; }
   position: absolute;
   left: 26%;
   right: 26%;
-  top: 28%;
-  bottom: 36%;
+  top: 22%;
+  bottom: 22%;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -767,10 +767,11 @@ input, textarea { font-weight: inherit; }
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   padding: 0 4px;
+  margin: 22px 0;
 }
 .heart-dialog-message:focus-visible { outline: 2px solid #0b2326; outline-offset: 2px; border-radius: 4px; }
 
-.heart-dialog-time { margin: 0; font-size: 12px; opacity: 0.8; }
+.heart-dialog-time { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; font-size: 12px; opacity: 0.8; }
 
 .heart-dialog-close {
   flex: none;

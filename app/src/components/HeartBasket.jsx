@@ -107,7 +107,7 @@ export default function HeartBasket({ messages, status = 'ok', page, onPageChang
                     aria-hidden="true"
                   >
                     {lines.map((line, j) => (
-                      <tspan key={j} x="0" y={-3 + (j - (lines.length - 1) / 2) * 11}>{line}</tspan>
+                      <tspan key={j} x="0" y={0 + (j - (lines.length - 1) / 2) * 11}>{line}</tspan>
                     ))}
                   </text>
                 </g>
