@@ -3,15 +3,19 @@ import PartyTestControls from './PartyTestControls';
 import HeartFrame from './HeartFrame';
 
 export default function MainScreen({
-  partyState, partyTest, messages, page, onPageChange, lastAdded,
+  partyState, partyTest, messages, status, page, onPageChange, lastAdded,
   onWriteClick, onZoomClick, onTitleClick,
 }) {
   return (
     <div className="main-screen">
       <header className="main-header">
-        <span className="header-deco" aria-hidden="true">✦ · ─ · ✦</span>
-        <h1 className="main-title" style={{ cursor: 'pointer' }} onClick={onTitleClick}>First Anniversary</h1>
-        <span className="header-deco" aria-hidden="true">✦ · ─ · ✦</span>
+        <img className="main-logo main-logo--side" src="/images/logo_ddp.png" width="529" height="155" alt="DDP" draggable="false" />
+        <h1 className="main-title">
+          <button type="button" className="main-title-btn" onClick={onTitleClick} aria-label="First Anniversary, 처음 화면으로">
+            <img className="main-logo main-logo--center" src="/images/logo_anniversary.png" width="420" height="71" alt="" draggable="false" />
+          </button>
+        </h1>
+        <img className="main-logo main-logo--side" src="/images/logo_year.png" width="529" height="155" alt="돌잔치" draggable="false" />
       </header>
 
       <main className="main-content">
@@ -28,6 +32,7 @@ export default function MainScreen({
         <section className="main-right">
           <HeartFrame
             messages={messages}
+            status={status}
             page={page}
             onPageChange={onPageChange}
             lastAdded={lastAdded}
@@ -36,6 +41,10 @@ export default function MainScreen({
           />
         </section>
       </main>
+
+      <footer className="main-footer">
+        D.D.P.(Designer DJ Party) 1주년 기념 파티
+      </footer>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import {
 import { coinLabel } from '../lib/coinLabel';
 import MessageDialog from './MessageDialog';
 
-export default function HeartBasket({ messages, page, onPageChange, lastAdded, size = 'main' }) {
+export default function HeartBasket({ messages, status = 'ok', page, onPageChange, lastAdded, size = 'main' }) {
   const [selected, setSelected] = useState(null);
   const triggerRef = useRef(null);
 
@@ -117,6 +117,7 @@ export default function HeartBasket({ messages, page, onPageChange, lastAdded, s
           <rect x={SLOT_X - 22} y={SLOT_Y - 6} width="44" height="8" rx="4" fill="#2a777e" />
           <path className="basket-arrow" d={`M${SLOT_X - 7} ${SLOT_Y + 10}h14l-7 9z`} fill="#f277ad" />
           <path
+            className="basket-pedestal"
             d={`M${SLOT_X - 22} ${BASKET_BOTTOM + 3} L${SLOT_X + 22} ${BASKET_BOTTOM + 3} L${SLOT_X + 38} ${BASKET_BOTTOM + 26} L${SLOT_X - 38} ${BASKET_BOTTOM + 26} Z`}
             fill="#ffffff"
             stroke="#2a777e"
@@ -135,8 +136,19 @@ export default function HeartBasket({ messages, page, onPageChange, lastAdded, s
             fill="#2a777e"
             pointerEvents="none"
           >
-            <tspan x={SLOT_X} dy="0">아직 메시지가 없어요</tspan>
-            <tspan x={SLOT_X} dy="36">첫 번째 하트를 남겨주세요</tspan>
+            {status === 'loading' ? (
+              <tspan x={SLOT_X} dy="0">하트를 불러오는 중…</tspan>
+            ) : status === 'error' ? (
+              <>
+                <tspan x={SLOT_X} dy="0">하트를 불러오지 못했어요</tspan>
+                <tspan x={SLOT_X} dy="36">잠시 후 다시 시도할게요</tspan>
+              </>
+            ) : (
+              <>
+                <tspan x={SLOT_X} dy="0">아직 메시지가 없어요</tspan>
+                <tspan x={SLOT_X} dy="36">첫 번째 하트를 남겨주세요</tspan>
+              </>
+            )}
           </text>
         )}
       </svg>

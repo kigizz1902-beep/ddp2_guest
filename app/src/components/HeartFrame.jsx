@@ -17,11 +17,12 @@ function HeartButton({ label, filled, onClick }) {
   );
 }
 
-export default function HeartFrame({ messages, page, onPageChange, lastAdded, onWriteClick, onZoomClick }) {
+export default function HeartFrame({ messages, status, page, onPageChange, lastAdded, onWriteClick, onZoomClick }) {
   return (
     <div className="heart-frame-container">
       <HeartBasket
         messages={messages}
+        status={status}
         page={page}
         onPageChange={onPageChange}
         lastAdded={lastAdded}

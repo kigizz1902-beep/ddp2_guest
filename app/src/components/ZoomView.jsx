@@ -1,6 +1,6 @@
 import HeartGrid from './HeartGrid';
 
-export default function ZoomView({ messages, onClose }) {
+export default function ZoomView({ messages, status, onClose }) {
   return (
     <div className="zoom-view">
       <div className="zoom-header">
@@ -8,7 +8,7 @@ export default function ZoomView({ messages, onClose }) {
         <button type="button" className="zoom-close" onClick={onClose}>✕ 닫기</button>
       </div>
       <div className="zoom-body">
-        <HeartGrid messages={messages} />
+        <HeartGrid messages={messages} status={status} />
       </div>
     </div>
   );

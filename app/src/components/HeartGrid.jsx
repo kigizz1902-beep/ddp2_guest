@@ -5,7 +5,7 @@ import MessageDialog from './MessageDialog';
 
 const PAD = 2;
 
-export default function HeartGrid({ messages }) {
+export default function HeartGrid({ messages, status = 'ok' }) {
   const [selected, setSelected] = useState(null);
   const triggerRef = useRef(null);
 
@@ -23,7 +23,10 @@ export default function HeartGrid({ messages }) {
   };
 
   if (messages.length === 0) {
-    return <p className="zoom-empty">아직 메시지가 없어요. 첫 번째 하트를 남겨주세요.</p>;
+    const text = status === 'loading' ? '하트를 불러오는 중…'
+      : status === 'error' ? '하트를 불러오지 못했어요. 잠시 후 다시 시도할게요.'
+      : '아직 메시지가 없어요. 첫 번째 하트를 남겨주세요.';
+    return <p className="zoom-empty">{text}</p>;
   }
 
   return (

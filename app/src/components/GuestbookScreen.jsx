@@ -12,7 +12,9 @@ export default function GuestbookScreen({ onBack, onSubmit, submitting }) {
     if (trimMsg.length > 100) { setError('메시지는 100자 이내로 입력해주세요.'); return; }
     const result = await onSubmit(trimMsg);
     if (!result.success) {
-      setError('등록에 실패했습니다. 다시 시도해주세요.');
+      setError(result.reason === 'too_fast'
+        ? '너무 빨리 등록했어요. 잠시 후 다시 눌러주세요.'
+        : '등록에 실패했습니다. 다시 시도해주세요.');
     }
   };
 

@@ -27,7 +27,7 @@ export default function App() {
     exitTest();
     setOverrideTime(time);
   }, [exitTest]);
-  const { messages, addMessage, submitting, lastAdded, clearLastAdded } = useGuestbook();
+  const { messages, status, addMessage, submitting, lastAdded, clearLastAdded } = useGuestbook();
 
   useEffect(() => {
     const handlePop = () => {
@@ -80,6 +80,7 @@ export default function App() {
           partyState={partyState}
           partyTest={partyTest}
           messages={messages}
+          status={status}
           page={basketPage}
           onPageChange={setBasketPage}
           lastAdded={lastAdded}
@@ -98,7 +99,7 @@ export default function App() {
       )}
 
       {screen === 'zoom' && (
-        <ZoomView messages={messages} onClose={handleBack} />
+        <ZoomView messages={messages} status={status} onClose={handleBack} />
       )}
 
       {showCeleb && (
